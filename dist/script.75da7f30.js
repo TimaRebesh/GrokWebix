@@ -491,7 +491,8 @@ var list = {
       borderless: true
     }]
   }]
-};
+}; // some comment
+
 exports.list = list;
 },{"./data/contacts":"data/contacts.js"}],"script.js":[function(require,module,exports) {
 "use strict";
