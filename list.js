@@ -137,8 +137,3 @@ let list = {
 };
 
 // six
-
-// new somjdkfjjjjjjjddddddddddddddddddddddddddd
-// some comment
-
-// dfdffffffffffffffffffffff
