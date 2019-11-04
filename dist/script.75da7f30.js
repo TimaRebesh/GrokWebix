@@ -491,7 +491,8 @@ var list = {
       borderless: true
     }]
   }]
-};
+}; // some comment
+
 exports.list = list;
 },{"./data/contacts":"data/contacts.js"}],"script.js":[function(require,module,exports) {
 "use strict";
@@ -598,7 +599,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56609" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51209" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
