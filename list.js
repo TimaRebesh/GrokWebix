@@ -137,8 +137,5 @@ let list = {
 };
 // new somjdkfjjjjjjjddddddddddddddddddddddddddd
 // some comment
-<<<<<<< HEAD
-// dfdffffffffffffffffffffff
-=======
 
->>>>>>> master
+// dfdffffffffffffffffffffff
