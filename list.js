@@ -135,5 +135,10 @@ let list = {
     }
   ]
 };
-// some comment
 // new somjdkfjjjjjjjddddddddddddddddddddddddddd
+// some comment
+<<<<<<< HEAD
+// dfdffffffffffffffffffffff
+=======
+
+>>>>>>> master
