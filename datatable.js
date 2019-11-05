@@ -76,11 +76,11 @@ let datatable = {
           width: 300
         },
         {
-          id: "b",
+          id: "Birthday",
           header: ["Birthday", { content: "textFilter" }],
           sort: "string",
           editor: "text",
-          fillspace: true
+          width: 300
         }
       ]
       // on: {                                 // second variant of communication with the form
@@ -139,6 +139,12 @@ let window = webix.ui({
       },
       { view: "text", label: "Company", name: "Company" },
       { view: "text", label: "Job", name: "Job" },
+      {
+        view: "datepicker",
+        name: "birthDate",
+        format: webix.i18n.longDateFormatStr,
+        label: "Birthday"
+      },
       {
         cols: [
           {

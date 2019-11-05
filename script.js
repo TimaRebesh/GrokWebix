@@ -66,30 +66,39 @@ webix.ready(function() {
         cols: [
           sidebar,
           {
-            cells: [list]
+            cells: [datatable, datatable2, list]
           }
         ]
       }
     ]
   });
-  $$("tableConectList").attachEvent("onBeforeEditStop", function(
-    state,
-    editor,
-    ignoreUpdate
-  ) {
+  $$("tableConectList").attachEvent("onBeforeEditStop", function() {
     // webix.message("Cell value was changed");
-    let values = $$("tableConectList").getEditorValue();
-    let id = $$("tableConectList").getEditor().row;
+    const values = $$("tableConectList").getEditorValue();
+    const id = $$("tableConectList").getEditor().row;
     // let id = $$("tableConectList").getValues().id;
+    console.log(values);
     console.log(id);
     // contacts // обновляю данные с сервера
-    //   .waitSave(() => {
-    //     if (id) {
-    //       contacts.updateItem(id, values);
-    //     }
+    //   .save(() => {
+    //     const a = contacts.updateItem(id, values);
+
     //   });
-    contacts.updateItem(id, values);
+    $$("tableConectList").updateItem(id, values);
   });
+
+  // $$("listOk").attachEvent("onAfterLoad", function() {
+  //   this.select(this.getFirstId());
+  //   let set = new Set();
+  //   console.log(contacts);
+  //   this.filter(function(obj) {
+  //     let compValue = obj.Company;
+  //     if (!set.has(compValue)) {
+  //       set.add(compValue);
+  //       return compValue;
+  //     }
+  //   });
+  // });
 });
 // datatable, datatable2,
 // console.log(dataUsers);

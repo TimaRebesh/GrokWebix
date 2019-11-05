@@ -1,20 +1,21 @@
-const dateFormat = webix.Date.strToDate("%d-%m-%Y");
-const strFormatDate = webix.Date.dateToStr("%Y-%m-%d");
-const birthdayDate = webix.Date.strToDate("%d-%F-%Y,%D");
+const formatToDate = webix.Date.strToDate("%d-%m-%Y %H:%i");
+const formatToStr = webix.Date.dateToStr("%d-%m-%Y");
+const serverFormat = webix.Date.dateToStr("%Y-%m-%d %H:%i");
 
 export const contacts = new webix.DataCollection({
+  url: "http://localhost:8096/api/v1/contacts/",
+  save: "rest->http://localhost:8096/api/v1/contacts/",
   scheme: {
     $init: obj => {
-      obj.b = obj.Birthday;
-      obj.Birthday = dateFormat(obj.Birthday);
+      // obj.value = `${obj.FirstName} ${obj.LastName}`;
+
+      obj.birthDate = formatToDate(obj.Birthday);
     },
     $update: obj => {
-      obj.Birthday = dateFormat(obj.Birthday);
+      obj.Birthday = formatToStr(obj.birthDate);
     },
     $save: obj => {
-      obj.Birthday = strFormatDate(obj.Birthday);
+      obj.Birthday = serverFormat(obj.birthDate);
     }
-  },
-  url: "http://localhost:8096/api/v1/contacts/",
-  save: "rest->http://localhost:8096/api/v1/contacts/"
+  }
 });
