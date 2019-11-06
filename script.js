@@ -1,8 +1,8 @@
 import { datatable, window } from "./datatable.js";
 import { datatable2 } from "./datatable2.js";
-import { list, dataUsers } from "./list.js";
+import { list } from "./list.js";
 import { contacts } from "./data/contacts";
-import { form } from "./form";
+import { getForm } from "./form";
 
 webix.protoUI(
   {
@@ -64,47 +64,51 @@ const sidebar = {
   }
 };
 
-webix.ready(function() {
-  webix.ui({
-    rows: [
-      toolbar,
-      {
-        cols: [
-          sidebar,
-          {
-            cells: [datatable, datatable2, list, form]
-          }
-        ]
-      }
-    ]
-  });
-  $$("tableConectList").attachEvent("onBeforeEditStop", function() {
-    // webix.message("Cell value was changed");
-    const values = $$("tableConectList").getEditorValue();
-    const id = $$("tableConectList").getEditor().row;
-    // let id = $$("tableConectList").getValues().id;
-    console.log(values);
-    console.log(id);
-    // contacts // обновляю данные с сервера
-    //   .save(() => {
-    //     const a = contacts.updateItem(id, values);
+contacts.waitData.then(() => {
+  let set = new Set();
 
+  contacts.filter(function(obj) {
+    let value = obj.Company;
+    set.add(value);
+    return value;
+  });
+  let companiesUnique = Array.from(set);
+
+  webix.ready(function() {
+    webix.ui({
+      rows: [
+        toolbar,
+        {
+          cols: [
+            sidebar,
+            {
+              cells: [getForm(companiesUnique), datatable, datatable2, list]
+            }
+          ]
+        }
+      ]
+    });
+
+    $$("tableConectList").attachEvent("onBeforeEditStop", function() {
+      const values = $$("tableConectList").getEditorValue();
+      const id = $$("tableConectList").getEditor().row;
+
+      $$("tableConectList").updateItem(id, values);
+    });
+
+    // $$("listOk").attachEvent("onAfterLoad", function() {
+    //   this.select(this.getFirstId());
+    //   let set = new Set();
+    //   console.log(contacts);
+    //   this.filter(function(obj) {
+    //     let compValue = obj.Company;
+    //     if (!set.has(compValue)) {
+    //       set.add(compValue);
+    //       return compValue;
+    //     }
     //   });
-    $$("tableConectList").updateItem(id, values);
+    // });
   });
-
-  // $$("listOk").attachEvent("onAfterLoad", function() {
-  //   this.select(this.getFirstId());
-  //   let set = new Set();
-  //   console.log(contacts);
-  //   this.filter(function(obj) {
-  //     let compValue = obj.Company;
-  //     if (!set.has(compValue)) {
-  //       set.add(compValue);
-  //       return compValue;
-  //     }
-  //   });
-  // });
 });
 // datatable, datatable2,
 // console.log(dataUsers);

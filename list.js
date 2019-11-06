@@ -21,8 +21,8 @@ let list = {
       on: {
         onAfterLoad: function() {
           this.select(this.getFirstId());
+
           let set = new Set();
-          console.log(contacts);
           this.filter(function(obj) {
             let compValue = obj.Company;
             if (!set.has(compValue)) {

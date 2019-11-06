@@ -132,7 +132,6 @@ var contacts = new webix.DataCollection({
   save: "rest->http://localhost:8096/api/v1/contacts/",
   scheme: {
     $init: function $init(obj) {
-      // obj.value = `${obj.FirstName} ${obj.LastName}`;
       obj.birthDate = formatToDate(obj.Birthday);
     },
     $update: function $update(obj) {
@@ -415,7 +414,6 @@ var list = {
       onAfterLoad: function onAfterLoad() {
         this.select(this.getFirstId());
         var set = new Set();
-        console.log(_contacts.contacts);
         this.filter(function (obj) {
           var compValue = obj.Company;
 
@@ -527,30 +525,35 @@ exports.list = list;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.form = void 0;
+exports.getForm = getForm;
 
 var _contacts = require("./data/contacts");
 
-var form = {
-  view: "form",
-  id: "myForm",
-  elementsConfig: {
-    labelWidth: 150,
-    margin: 20
-  },
-  elements: [{
-    type: "header",
-    template: "dfdfsfdfd",
-    height: 40
-  }, {
-    cols: [{
-      view: "combo",
-      name: "StatusID",
-      label: "Status"
+function getForm(companiesUnique) {
+  var form = {
+    view: "form",
+    id: "myForm",
+    elementsConfig: {
+      labelWidth: 150,
+      margin: 20
+    },
+    elements: [{
+      type: "header",
+      template: "dfdfsfdfd",
+      height: 40,
+      css: "form_header"
+    }, {
+      cols: [{
+        rows: [{
+          view: "select",
+          label: "Company",
+          options: companiesUnique
+        }]
+      }, {}]
     }]
-  }]
-};
-exports.form = form;
+  };
+  return form;
+}
 },{"./data/contacts":"data/contacts.js"}],"script.js":[function(require,module,exports) {
 "use strict";
 
@@ -610,38 +613,42 @@ var sidebar = {
     }
   }
 };
-webix.ready(function () {
-  webix.ui({
-    rows: [toolbar, {
-      cols: [sidebar, {
-        cells: [_datatable.datatable, _datatable2.datatable2, _list.list, _form.form]
-      }]
-    }]
+
+_contacts.contacts.waitData.then(function () {
+  var set = new Set();
+
+  _contacts.contacts.filter(function (obj) {
+    var value = obj.Company;
+    set.add(value);
+    return value;
   });
-  $$("tableConectList").attachEvent("onBeforeEditStop", function () {
-    // webix.message("Cell value was changed");
-    var values = $$("tableConectList").getEditorValue();
-    var id = $$("tableConectList").getEditor().row; // let id = $$("tableConectList").getValues().id;
 
-    console.log(values);
-    console.log(id); // contacts // обновляю данные с сервера
-    //   .save(() => {
-    //     const a = contacts.updateItem(id, values);
+  var companiesUnique = Array.from(set);
+  webix.ready(function () {
+    webix.ui({
+      rows: [toolbar, {
+        cols: [sidebar, {
+          cells: [(0, _form.getForm)(companiesUnique), _datatable.datatable, _datatable2.datatable2, _list.list]
+        }]
+      }]
+    });
+    $$("tableConectList").attachEvent("onBeforeEditStop", function () {
+      var values = $$("tableConectList").getEditorValue();
+      var id = $$("tableConectList").getEditor().row;
+      $$("tableConectList").updateItem(id, values);
+    }); // $$("listOk").attachEvent("onAfterLoad", function() {
+    //   this.select(this.getFirstId());
+    //   let set = new Set();
+    //   console.log(contacts);
+    //   this.filter(function(obj) {
+    //     let compValue = obj.Company;
+    //     if (!set.has(compValue)) {
+    //       set.add(compValue);
+    //       return compValue;
+    //     }
     //   });
-
-    $$("tableConectList").updateItem(id, values);
-  }); // $$("listOk").attachEvent("onAfterLoad", function() {
-  //   this.select(this.getFirstId());
-  //   let set = new Set();
-  //   console.log(contacts);
-  //   this.filter(function(obj) {
-  //     let compValue = obj.Company;
-  //     if (!set.has(compValue)) {
-  //       set.add(compValue);
-  //       return compValue;
-  //     }
-  //   });
-  // });
+    // });
+  });
 }); // datatable, datatable2,
 // console.log(dataUsers);
 },{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js","./form":"form.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -672,7 +679,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62018" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50255" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
