@@ -14,8 +14,6 @@ let list = {
       select: true,
       item: { height: 60, css: "list_Item" },
       template: "#Company#",
-      // editable: true,
-      // data: contacts,
       url: "http://localhost:8096/api/v1/contacts/",
       save: "rest->http://localhost:8096/api/v1/contacts/",
       on: {
@@ -33,6 +31,7 @@ let list = {
         },
         onAfterSelect: function(id) {
           $$("tableConectList").clearAll();
+
           dataToDatatable = [];
           let item = this.getItem(id);
           let cont = contacts.serialize();

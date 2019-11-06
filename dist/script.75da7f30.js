@@ -406,8 +406,6 @@ var list = {
       css: "list_Item"
     },
     template: "#Company#",
-    // editable: true,
-    // data: contacts,
     url: "http://localhost:8096/api/v1/contacts/",
     save: "rest->http://localhost:8096/api/v1/contacts/",
     on: {
@@ -534,7 +532,7 @@ function getForm(companiesUnique) {
     view: "form",
     id: "myForm",
     elementsConfig: {
-      labelWidth: 150,
+      labelWidth: 100,
       margin: 20
     },
     elements: [{
@@ -545,10 +543,49 @@ function getForm(companiesUnique) {
     }, {
       cols: [{
         rows: [{
-          view: "select",
+          view: "combo",
           label: "Company",
-          options: companiesUnique
-        }]
+          options: companiesUnique,
+          on: {
+            onChange: function onChange() {
+              var _this = this;
+
+              $$("datatableConnectForm").clearAll();
+              var arrOfSelected = [];
+
+              _contacts.contacts.filter(function (obj) {
+                if (_this.getValue() == obj.Company) {
+                  arrOfSelected.push(obj);
+                }
+
+                return obj;
+              });
+
+              $$("datatableConnectForm").parse(arrOfSelected);
+            }
+          }
+        }, {
+          view: "datatable",
+          id: "datatableConnectForm",
+          autoConfig: true,
+          select: true,
+          columns: [{
+            id: "Job",
+            header: ["Job", {
+              content: "textFilter"
+            }],
+            sort: "string",
+            editor: "text",
+            fillspace: true
+          }, {
+            id: "LastName",
+            header: ["LastName", {
+              content: "textFilter"
+            }],
+            sort: "string",
+            editor: "text"
+          }]
+        }, {}]
       }, {}]
     }]
   };
@@ -620,7 +657,7 @@ _contacts.contacts.waitData.then(function () {
   _contacts.contacts.filter(function (obj) {
     var value = obj.Company;
     set.add(value);
-    return value;
+    return obj;
   });
 
   var companiesUnique = Array.from(set);

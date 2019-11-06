@@ -7,7 +7,7 @@ function getForm(companiesUnique) {
     view: "form",
     id: "myForm",
     elementsConfig: {
-      labelWidth: 150,
+      labelWidth: 100,
       margin: 20
     },
     elements: [
@@ -22,10 +22,47 @@ function getForm(companiesUnique) {
           {
             rows: [
               {
-                view: "select",
+                view: "combo",
                 label: "Company",
-                options: companiesUnique
-              }
+                options: companiesUnique,
+                on: {
+                  onChange: function() {
+                    $$("datatableConnectForm").clearAll();
+
+                    let arrOfSelected = [];
+
+                    contacts.filter(obj => {
+                      if (this.getValue() == obj.Company) {
+                        arrOfSelected.push(obj);
+                      }
+                      return obj;
+                    });
+                    $$("datatableConnectForm").parse(arrOfSelected);
+                  }
+                }
+              },
+              {
+                view: "datatable",
+                id: "datatableConnectForm",
+                autoConfig: true,
+                select: true,
+                columns: [
+                  {
+                    id: "Job",
+                    header: ["Job", { content: "textFilter" }],
+                    sort: "string",
+                    editor: "text",
+                    fillspace: true
+                  },
+                  {
+                    id: "LastName",
+                    header: ["LastName", { content: "textFilter" }],
+                    sort: "string",
+                    editor: "text"
+                  }
+                ]
+              },
+              {}
             ]
           },
           {}

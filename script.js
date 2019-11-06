@@ -70,8 +70,9 @@ contacts.waitData.then(() => {
   contacts.filter(function(obj) {
     let value = obj.Company;
     set.add(value);
-    return value;
+    return obj;
   });
+
   let companiesUnique = Array.from(set);
 
   webix.ready(function() {
