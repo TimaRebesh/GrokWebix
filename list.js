@@ -107,7 +107,6 @@ let list = {
                   cancel: "Cancel"
                 })
                 .then(() => {
-                  // $$("tableConectList").remove(id);
                   $$("tableConectList").remove(id);
                   $$("listOk").select($$("listOk").getFirstId());
                 });

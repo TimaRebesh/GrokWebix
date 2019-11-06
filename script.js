@@ -74,6 +74,7 @@ contacts.waitData.then(() => {
   });
 
   let companiesUnique = Array.from(set);
+  companiesUnique.push("All companies");
 
   webix.ready(function() {
     webix.ui({
@@ -83,7 +84,7 @@ contacts.waitData.then(() => {
           cols: [
             sidebar,
             {
-              cells: [getForm(companiesUnique), datatable, datatable2, list]
+              cells: [datatable, datatable2, list, getForm(companiesUnique)]
             }
           ]
         }
@@ -96,20 +97,5 @@ contacts.waitData.then(() => {
 
       $$("tableConectList").updateItem(id, values);
     });
-
-    // $$("listOk").attachEvent("onAfterLoad", function() {
-    //   this.select(this.getFirstId());
-    //   let set = new Set();
-    //   console.log(contacts);
-    //   this.filter(function(obj) {
-    //     let compValue = obj.Company;
-    //     if (!set.has(compValue)) {
-    //       set.add(compValue);
-    //       return compValue;
-    //     }
-    //   });
-    // });
   });
 });
-// datatable, datatable2,
-// console.log(dataUsers);

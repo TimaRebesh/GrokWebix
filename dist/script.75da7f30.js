@@ -349,6 +349,7 @@ var datatable2 = {
   id: "datatable2",
   autoConfig: true,
   url: url,
+  save: url,
   editable: true,
   scheme: {
     $init: function $init(obj) {
@@ -379,7 +380,10 @@ var datatable2 = {
   }, {
     header: "",
     width: 200
-  }]
+  }],
+  on: {
+    onAfterEditStop: function onAfterEditStop() {}
+  }
 };
 exports.datatable2 = datatable2;
 },{}],"list.js":[function(require,module,exports) {
@@ -492,7 +496,6 @@ var list = {
             ok: "OK",
             cancel: "Cancel"
           }).then(function () {
-            // $$("tableConectList").remove(id);
             $$("tableConectList").remove(id);
             $$("listOk").select($$("listOk").getFirstId());
           });
@@ -527,24 +530,67 @@ exports.getForm = getForm;
 
 var _contacts = require("./data/contacts");
 
+var someForm = {
+  view: "form",
+  id: "ParamForm",
+  elements: [{
+    view: "text",
+    placeholder: "First Name"
+  }, {
+    view: "text",
+    placeholder: "Last Name"
+  }, {
+    cols: [{
+      view: "button",
+      value: "Cancel"
+    }, {
+      view: "button",
+      value: "Sumbit",
+      type: "form"
+    }]
+  }]
+};
+var addParams = {
+  view: "form",
+  id: "addParam",
+  borderless: true,
+  elements: [{
+    view: "slider"
+  }, {
+    view: "datepicker",
+    label: "Date"
+  }, {
+    view: "colorpicker",
+    label: "Color"
+  }]
+};
+
+function showAdditionalParameters() {
+  webix.ui(addParams, $$("ParamForm"));
+}
+
+function hideAdditionalParameters() {
+  webix.ui(someForm, $$("addParam"));
+}
+
 function getForm(companiesUnique) {
   var form = {
     view: "form",
     id: "myForm",
     elementsConfig: {
-      labelWidth: 100,
+      labelWidth: 140,
       margin: 20
     },
     elements: [{
       type: "header",
-      template: "dfdfsfdfd",
+      template: "Companies",
       height: 40,
       css: "form_header"
     }, {
       cols: [{
         rows: [{
           view: "combo",
-          label: "Company",
+          label: "Select company",
           options: companiesUnique,
           on: {
             onChange: function onChange() {
@@ -555,6 +601,10 @@ function getForm(companiesUnique) {
 
               _contacts.contacts.filter(function (obj) {
                 if (_this.getValue() == obj.Company) {
+                  arrOfSelected.push(obj);
+                }
+
+                if (_this.getValue() == "All companies") {
                   arrOfSelected.push(obj);
                 }
 
@@ -585,8 +635,38 @@ function getForm(companiesUnique) {
             sort: "string",
             editor: "text"
           }]
-        }, {}]
-      }, {}]
+        }, {
+          height: 5
+        }]
+      }, {
+        rows: [{
+          view: "uploader",
+          value: "Upload files",
+          name: "files",
+          link: "listOfUploder",
+          upload: "https://docs.webix.com/samples/server/upload"
+        }, {
+          view: "list",
+          id: "listOfUploder",
+          type: "uploader",
+          autoheight: true,
+          minHeight: 300,
+          borderless: true
+        }, {
+          view: "checkbox",
+          labelRight: "additional control parameters",
+          value: 0,
+          click: function click() {
+            if (this.getValue() == 1) {
+              showAdditionalParameters();
+            } else {
+              hideAdditionalParameters();
+            }
+          }
+        }, someForm, {}, {
+          height: 5
+        }]
+      }]
     }]
   };
   return form;
@@ -661,11 +741,12 @@ _contacts.contacts.waitData.then(function () {
   });
 
   var companiesUnique = Array.from(set);
+  companiesUnique.push("All companies");
   webix.ready(function () {
     webix.ui({
       rows: [toolbar, {
         cols: [sidebar, {
-          cells: [(0, _form.getForm)(companiesUnique), _datatable.datatable, _datatable2.datatable2, _list.list]
+          cells: [_datatable.datatable, _datatable2.datatable2, _list.list, (0, _form.getForm)(companiesUnique)]
         }]
       }]
     });
@@ -673,21 +754,9 @@ _contacts.contacts.waitData.then(function () {
       var values = $$("tableConectList").getEditorValue();
       var id = $$("tableConectList").getEditor().row;
       $$("tableConectList").updateItem(id, values);
-    }); // $$("listOk").attachEvent("onAfterLoad", function() {
-    //   this.select(this.getFirstId());
-    //   let set = new Set();
-    //   console.log(contacts);
-    //   this.filter(function(obj) {
-    //     let compValue = obj.Company;
-    //     if (!set.has(compValue)) {
-    //       set.add(compValue);
-    //       return compValue;
-    //     }
-    //   });
-    // });
+    });
   });
-}); // datatable, datatable2,
-// console.log(dataUsers);
+});
 },{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js","./form":"form.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
