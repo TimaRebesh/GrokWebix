@@ -230,6 +230,8 @@ var datatable = {
       sort: "string",
       editor: "text",
       width: 300
+    }, {
+      fillspace: true
     }] // on: {                                 // second variant of communication with the form
     //   onItemDblClick: function() {
     //     $$("myPopup").show();
@@ -519,6 +521,36 @@ var list = {
   }]
 };
 exports.list = list;
+},{"./data/contacts":"data/contacts.js"}],"form.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.form = void 0;
+
+var _contacts = require("./data/contacts");
+
+var form = {
+  view: "form",
+  id: "myForm",
+  elementsConfig: {
+    labelWidth: 150,
+    margin: 20
+  },
+  elements: [{
+    type: "header",
+    template: "dfdfsfdfd",
+    height: 40
+  }, {
+    cols: [{
+      view: "combo",
+      name: "StatusID",
+      label: "Status"
+    }]
+  }]
+};
+exports.form = form;
 },{"./data/contacts":"data/contacts.js"}],"script.js":[function(require,module,exports) {
 "use strict";
 
@@ -529,6 +561,8 @@ var _datatable2 = require("./datatable2.js");
 var _list = require("./list.js");
 
 var _contacts = require("./data/contacts");
+
+var _form = require("./form");
 
 webix.protoUI({
   name: "editlist"
@@ -545,6 +579,10 @@ var menu_data = [{
   id: "myList",
   icon: "mdi mdi-view-column",
   value: "List"
+}, {
+  id: "myForm",
+  icon: "mdi mdi-view-column",
+  value: "Form"
 }];
 var toolbar = {
   view: "toolbar",
@@ -576,7 +614,7 @@ webix.ready(function () {
   webix.ui({
     rows: [toolbar, {
       cols: [sidebar, {
-        cells: [_datatable.datatable, _datatable2.datatable2, _list.list]
+        cells: [_datatable.datatable, _datatable2.datatable2, _list.list, _form.form]
       }]
     }]
   });
@@ -606,7 +644,7 @@ webix.ready(function () {
   // });
 }); // datatable, datatable2,
 // console.log(dataUsers);
-},{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js","./form":"form.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -634,7 +672,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64776" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62018" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -2,6 +2,7 @@ import { datatable, window } from "./datatable.js";
 import { datatable2 } from "./datatable2.js";
 import { list, dataUsers } from "./list.js";
 import { contacts } from "./data/contacts";
+import { form } from "./form";
 
 webix.protoUI(
   {
@@ -26,6 +27,11 @@ let menu_data = [
     id: "myList",
     icon: "mdi mdi-view-column",
     value: "List"
+  },
+  {
+    id: "myForm",
+    icon: "mdi mdi-view-column",
+    value: "Form"
   }
 ];
 
@@ -66,7 +72,7 @@ webix.ready(function() {
         cols: [
           sidebar,
           {
-            cells: [datatable, datatable2, list]
+            cells: [datatable, datatable2, list, form]
           }
         ]
       }

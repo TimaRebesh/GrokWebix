@@ -81,7 +81,8 @@ let datatable = {
           sort: "string",
           editor: "text",
           width: 300
-        }
+        },
+        { fillspace: true }
       ]
       // on: {                                 // second variant of communication with the form
       //   onItemDblClick: function() {
