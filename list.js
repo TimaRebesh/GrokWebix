@@ -14,15 +14,13 @@ let list = {
       select: true,
       item: { height: 60, css: "list_Item" },
       template: "#Company#",
-      // editable: true,
-      // data: contacts,
       url: "http://localhost:8096/api/v1/contacts/",
       save: "rest->http://localhost:8096/api/v1/contacts/",
       on: {
         onAfterLoad: function() {
           this.select(this.getFirstId());
+
           let set = new Set();
-          console.log(contacts);
           this.filter(function(obj) {
             let compValue = obj.Company;
             if (!set.has(compValue)) {
@@ -33,6 +31,7 @@ let list = {
         },
         onAfterSelect: function(id) {
           $$("tableConectList").clearAll();
+
           dataToDatatable = [];
           let item = this.getItem(id);
           let cont = contacts.serialize();
@@ -108,7 +107,6 @@ let list = {
                   cancel: "Cancel"
                 })
                 .then(() => {
-                  // $$("tableConectList").remove(id);
                   $$("tableConectList").remove(id);
                   $$("listOk").select($$("listOk").getFirstId());
                 });

@@ -7,6 +7,7 @@ let datatable2 = {
   id: "datatable2",
   autoConfig: true,
   url: url,
+  save: url,
   editable: true,
   scheme: {
     $init: function(obj) {
@@ -41,5 +42,8 @@ let datatable2 = {
       adjust: true
     },
     { header: "", width: 200 }
-  ]
+  ],
+  on: {
+    onAfterEditStop: function() {}
+  }
 };
