@@ -9,18 +9,20 @@ let list = {
   cols: [
     {
       view: "list",
-
+      id: "listOk",
       width: 200,
       select: true,
       item: { height: 60, css: "list_Item" },
       template: "#Company#",
       // editable: true,
+      // data: contacts,
       url: "http://localhost:8096/api/v1/contacts/",
+      save: "rest->http://localhost:8096/api/v1/contacts/",
       on: {
         onAfterLoad: function() {
           this.select(this.getFirstId());
           let set = new Set();
-
+          console.log(contacts);
           this.filter(function(obj) {
             let compValue = obj.Company;
             if (!set.has(compValue)) {
@@ -50,8 +52,7 @@ let list = {
         {
           view: "datatable",
           id: "tableConectList",
-          // data: dataToDatatable,
-          save: "http://localhost:8096/api/v1/contacts/",
+          save: "rest->http://localhost:8096/api/v1/contacts/",
           select: true,
           editable: true,
           scrollY: true,
@@ -60,7 +61,7 @@ let list = {
           scheme: {
             $init: function(obj) {
               const today = new Date();
-              let birthDate = new Date(obj.Birthday);
+              let birthDate = new Date(obj.birthDate);
               let age = today.getFullYear() - birthDate.getFullYear();
               let m = today.getMonth() - birthDate.getMonth();
               if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
@@ -91,8 +92,30 @@ let list = {
               header: "LastName",
               id: "LastName",
               fillspace: true
+            },
+            {
+              id: "",
+              template: "{common.trashIcon()}",
+              width: 40
             }
           ],
+          onClick: {
+            "wxi-trash": (e, id) => {
+              webix
+                .confirm({
+                  text: "Are you sure?",
+                  ok: "OK",
+                  cancel: "Cancel"
+                })
+                .then(() => {
+                  // $$("tableConectList").remove(id);
+                  $$("tableConectList").remove(id);
+                  $$("listOk").select($$("listOk").getFirstId());
+                });
+              return false;
+            }
+          },
+
           on: {
             onAfterSelect: function() {
               itemObj = this.getItem(this.getSelectedId());
@@ -120,7 +143,7 @@ let list = {
                   " "}</p>
               </div>
               <div class="info_block3">
-                <p><span class="userbirthday webix_icon wxi-calendar"></span> day of birth: ${obj.b ||
+                <p><span class="userbirthday webix_icon wxi-calendar"></span> day of birth: ${obj.Birthday ||
                   " "}</p>
                 <p><span class="userlocation mdi mdi-map-marker"></span> location: ${obj.Address ||
                   " "}</p>
@@ -135,9 +158,3 @@ let list = {
     }
   ]
 };
-
-// dkfjdkfjdjkfj
-// fdfdd
-// dfddfddfdf5454545
-// dsdsdsd
-// xsdsdsds

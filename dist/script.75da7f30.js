@@ -124,24 +124,24 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.contacts = void 0;
-var dateFormat = webix.Date.strToDate("%d-%m-%Y");
-var strFormatDate = webix.Date.dateToStr("%Y-%m-%d");
-var birthdayDate = webix.Date.strToDate("%d-%F-%Y,%D");
+var formatToDate = webix.Date.strToDate("%d-%m-%Y %H:%i");
+var formatToStr = webix.Date.dateToStr("%d-%m-%Y");
+var serverFormat = webix.Date.dateToStr("%Y-%m-%d %H:%i");
 var contacts = new webix.DataCollection({
+  url: "http://localhost:8096/api/v1/contacts/",
+  save: "rest->http://localhost:8096/api/v1/contacts/",
   scheme: {
     $init: function $init(obj) {
-      obj.b = obj.Birthday;
-      obj.Birthday = dateFormat(obj.Birthday);
+      // obj.value = `${obj.FirstName} ${obj.LastName}`;
+      obj.birthDate = formatToDate(obj.Birthday);
     },
     $update: function $update(obj) {
-      obj.Birthday = dateFormat(obj.Birthday);
+      obj.Birthday = formatToStr(obj.birthDate);
     },
     $save: function $save(obj) {
-      obj.Birthday = strFormatDate(obj.Birthday);
+      obj.Birthday = serverFormat(obj.birthDate);
     }
-  },
-  url: "http://localhost:8096/api/v1/contacts/",
-  save: "rest->http://localhost:8096/api/v1/contacts/"
+  }
 });
 exports.contacts = contacts;
 },{}],"datatable.js":[function(require,module,exports) {
@@ -223,12 +223,14 @@ var datatable = {
       editor: "text",
       width: 300
     }, {
-      id: "b",
+      id: "Birthday",
       header: ["Birthday", {
         content: "textFilter"
       }],
       sort: "string",
       editor: "text",
+      width: 300
+    }, {
       fillspace: true
     }] // on: {                                 // second variant of communication with the form
     //   onItemDblClick: function() {
@@ -289,6 +291,11 @@ var window = webix.ui({
       view: "text",
       label: "Job",
       name: "Job"
+    }, {
+      view: "datepicker",
+      name: "birthDate",
+      format: webix.i18n.longDateFormatStr,
+      label: "Birthday"
     }, {
       cols: [{
         view: "button",
@@ -392,6 +399,7 @@ var list = {
   id: "myList",
   cols: [{
     view: "list",
+    id: "listOk",
     width: 200,
     select: true,
     item: {
@@ -400,11 +408,14 @@ var list = {
     },
     template: "#Company#",
     // editable: true,
+    // data: contacts,
     url: "http://localhost:8096/api/v1/contacts/",
+    save: "rest->http://localhost:8096/api/v1/contacts/",
     on: {
       onAfterLoad: function onAfterLoad() {
         this.select(this.getFirstId());
         var set = new Set();
+        console.log(_contacts.contacts);
         this.filter(function (obj) {
           var compValue = obj.Company;
 
@@ -435,8 +446,7 @@ var list = {
     rows: [{
       view: "datatable",
       id: "tableConectList",
-      // data: dataToDatatable,
-      save: "http://localhost:8096/api/v1/contacts/",
+      save: "rest->http://localhost:8096/api/v1/contacts/",
       select: true,
       editable: true,
       scrollY: true,
@@ -445,7 +455,7 @@ var list = {
       scheme: {
         $init: function $init(obj) {
           var today = new Date();
-          var birthDate = new Date(obj.Birthday);
+          var birthDate = new Date(obj.birthDate);
           var age = today.getFullYear() - birthDate.getFullYear();
           var m = today.getMonth() - birthDate.getMonth();
 
@@ -474,7 +484,25 @@ var list = {
         header: "LastName",
         id: "LastName",
         fillspace: true
+      }, {
+        id: "",
+        template: "{common.trashIcon()}",
+        width: 40
       }],
+      onClick: {
+        "wxi-trash": function wxiTrash(e, id) {
+          webix.confirm({
+            text: "Are you sure?",
+            ok: "OK",
+            cancel: "Cancel"
+          }).then(function () {
+            // $$("tableConectList").remove(id);
+            $$("tableConectList").remove(id);
+            $$("listOk").select($$("listOk").getFirstId());
+          });
+          return false;
+        }
+      },
       on: {
         onAfterSelect: function onAfterSelect() {
           itemObj = this.getItem(this.getSelectedId());
@@ -484,16 +512,45 @@ var list = {
       }
     }, {
       template: function template(obj) {
-        return "\n            <div class=\"info_block1\">\n              <div class=\"userinfo_photo\">\n                <image class=\"photo\" src=\"".concat(obj.Photo || "http://confirent.ru/sites/all/themes/skeletontheme/images/empty_avatar.jpg", "\" />\n                <h1 class=\"name\">").concat(obj.FirstName || " ", "</h1>\n                <h2 class=\"name\">").concat(obj.LastName || " ", "</h2>\n              </div>\n              <div class=\"info_block2\">\n                <p><span class=\"useremail mdi mdi-email\"></span> email: ").concat(obj.Email || " ", "</p>\n                <p><span class=\"userskype mdi mdi-skype\"></span> skype: ").concat(obj.Skype || " ", "</p>\n                <p><span class=\"mdi mdi-tag\"></span> job: ").concat(obj.Job || " ", "</p>\n                <p><span class=\"usercompany mdi mdi-briefcase\"></span> company ").concat(obj.Company || " ", "</p>\n              </div>\n              <div class=\"info_block3\">\n                <p><span class=\"userbirthday webix_icon wxi-calendar\"></span> day of birth: ").concat(obj.b || " ", "</p>\n                <p><span class=\"userlocation mdi mdi-map-marker\"></span> location: ").concat(obj.Address || " ", "</p>\n              </div>\n            </div>\n          ");
+        return "\n            <div class=\"info_block1\">\n              <div class=\"userinfo_photo\">\n                <image class=\"photo\" src=\"".concat(obj.Photo || "http://confirent.ru/sites/all/themes/skeletontheme/images/empty_avatar.jpg", "\" />\n                <h1 class=\"name\">").concat(obj.FirstName || " ", "</h1>\n                <h2 class=\"name\">").concat(obj.LastName || " ", "</h2>\n              </div>\n              <div class=\"info_block2\">\n                <p><span class=\"useremail mdi mdi-email\"></span> email: ").concat(obj.Email || " ", "</p>\n                <p><span class=\"userskype mdi mdi-skype\"></span> skype: ").concat(obj.Skype || " ", "</p>\n                <p><span class=\"mdi mdi-tag\"></span> job: ").concat(obj.Job || " ", "</p>\n                <p><span class=\"usercompany mdi mdi-briefcase\"></span> company ").concat(obj.Company || " ", "</p>\n              </div>\n              <div class=\"info_block3\">\n                <p><span class=\"userbirthday webix_icon wxi-calendar\"></span> day of birth: ").concat(obj.Birthday || " ", "</p>\n                <p><span class=\"userlocation mdi mdi-map-marker\"></span> location: ").concat(obj.Address || " ", "</p>\n              </div>\n            </div>\n          ");
       },
       id: "template",
       view: "template",
       borderless: true
     }]
   }]
-}; // some comment
-
+};
 exports.list = list;
+},{"./data/contacts":"data/contacts.js"}],"form.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.form = void 0;
+
+var _contacts = require("./data/contacts");
+
+var form = {
+  view: "form",
+  id: "myForm",
+  elementsConfig: {
+    labelWidth: 150,
+    margin: 20
+  },
+  elements: [{
+    type: "header",
+    template: "dfdfsfdfd",
+    height: 40
+  }, {
+    cols: [{
+      view: "combo",
+      name: "StatusID",
+      label: "Status"
+    }]
+  }]
+};
+exports.form = form;
 },{"./data/contacts":"data/contacts.js"}],"script.js":[function(require,module,exports) {
 "use strict";
 
@@ -504,6 +561,8 @@ var _datatable2 = require("./datatable2.js");
 var _list = require("./list.js");
 
 var _contacts = require("./data/contacts");
+
+var _form = require("./form");
 
 webix.protoUI({
   name: "editlist"
@@ -520,6 +579,10 @@ var menu_data = [{
   id: "myList",
   icon: "mdi mdi-view-column",
   value: "List"
+}, {
+  id: "myForm",
+  icon: "mdi mdi-view-column",
+  value: "Form"
 }];
 var toolbar = {
   view: "toolbar",
@@ -551,27 +614,37 @@ webix.ready(function () {
   webix.ui({
     rows: [toolbar, {
       cols: [sidebar, {
-        cells: [_list.list]
+        cells: [_datatable.datatable, _datatable2.datatable2, _list.list, _form.form]
       }]
     }]
   });
-  $$("tableConectList").attachEvent("onBeforeEditStop", function (state, editor, ignoreUpdate) {
+  $$("tableConectList").attachEvent("onBeforeEditStop", function () {
     // webix.message("Cell value was changed");
     var values = $$("tableConectList").getEditorValue();
     var id = $$("tableConectList").getEditor().row; // let id = $$("tableConectList").getValues().id;
 
+    console.log(values);
     console.log(id); // contacts // обновляю данные с сервера
-    //   .waitSave(() => {
-    //     if (id) {
-    //       contacts.updateItem(id, values);
-    //     }
+    //   .save(() => {
+    //     const a = contacts.updateItem(id, values);
     //   });
 
-    _contacts.contacts.updateItem(id, values);
-  });
+    $$("tableConectList").updateItem(id, values);
+  }); // $$("listOk").attachEvent("onAfterLoad", function() {
+  //   this.select(this.getFirstId());
+  //   let set = new Set();
+  //   console.log(contacts);
+  //   this.filter(function(obj) {
+  //     let compValue = obj.Company;
+  //     if (!set.has(compValue)) {
+  //       set.add(compValue);
+  //       return compValue;
+  //     }
+  //   });
+  // });
 }); // datatable, datatable2,
 // console.log(dataUsers);
-},{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./datatable.js":"datatable.js","./datatable2.js":"datatable2.js","./list.js":"list.js","./data/contacts":"data/contacts.js","./form":"form.js"}],"C:/Users/User/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -599,7 +672,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51209" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62018" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
