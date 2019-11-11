@@ -123,7 +123,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.contacts = void 0;
+exports.userData = exports.contacts = void 0;
 var formatToDate = webix.Date.strToDate("%d-%m-%Y %H:%i");
 var formatToStr = webix.Date.dateToStr("%d-%m-%Y");
 var serverFormat = webix.Date.dateToStr("%Y-%m-%d %H:%i");
@@ -143,6 +143,16 @@ var contacts = new webix.DataCollection({
   }
 });
 exports.contacts = contacts;
+var userData = new webix.DataCollection({
+  url: "https://jsonplaceholder.typicode.com/users",
+  save: "rest->https://jsonplaceholder.typicode.com/users",
+  scheme: {
+    $init: function $init(obj) {
+      obj.city = obj.address.city, obj.company = obj.company.name;
+    }
+  }
+});
+exports.userData = userData;
 },{}],"datatable.js":[function(require,module,exports) {
 "use strict";
 
@@ -343,19 +353,20 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.datatable2 = void 0;
-var url = "https://jsonplaceholder.typicode.com/users";
+
+var _contacts = require("./data/contacts");
+
 var datatable2 = {
   view: "datatable",
   id: "datatable2",
   autoConfig: true,
-  url: url,
-  save: url,
+  data: _contacts.userData,
   editable: true,
-  scheme: {
-    $init: function $init(obj) {
-      obj.city = obj.address.city, obj.company = obj.company.name;
-    }
-  },
+  // scheme: {
+  //   $init: function(obj) {
+  //     (obj.city = obj.address.city), (obj.company = obj.company.name);
+  //   }
+  // },
   columns: [{
     id: "name",
     header: "Name of user",
@@ -386,7 +397,7 @@ var datatable2 = {
   }
 };
 exports.datatable2 = datatable2;
-},{}],"list.js":[function(require,module,exports) {
+},{"./data/contacts":"data/contacts.js"}],"list.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -555,13 +566,34 @@ var addParams = {
   id: "addParam",
   borderless: true,
   elements: [{
-    view: "slider"
+    view: "slider",
+    lable: "menu width",
+    title: webix.template("#value#"),
+    min: "100",
+    max: "250",
+    step: "10",
+    value: "250",
+    on: {
+      onChange: function onChange() {
+        var size = this.getValue();
+        $$("sidebar").getNode().style.width = size + "px";
+      }
+    }
   }, {
     view: "datepicker",
-    label: "Date"
+    label: "Date",
+    id: "sss"
   }, {
     view: "colorpicker",
-    label: "Color"
+    label: "Menu Color",
+    labelWidth: 120,
+    on: {
+      onChange: function onChange() {
+        var color = this.getValue();
+        $$("sidebar").getNode().style.backgroundColor = color;
+        $$("toolbar").getNode().style.backgroundColor = color;
+      }
+    }
   }]
 };
 
@@ -693,11 +725,11 @@ var menu_data = [{
   value: "Table"
 }, {
   id: "datatable2",
-  icon: "mdi mdi-view-column",
+  icon: "wxi-user",
   value: "Users"
 }, {
   id: "myList",
-  icon: "mdi mdi-view-column",
+  icon: "mdi mdi-format-line-style",
   value: "List"
 }, {
   id: "myForm",
@@ -706,6 +738,7 @@ var menu_data = [{
 }];
 var toolbar = {
   view: "toolbar",
+  id: "toolbar",
   padding: 3,
   css: "webix_dark",
   elements: [{
@@ -723,6 +756,7 @@ var sidebar = {
   view: "sidebar",
   id: "sidebar",
   css: "webix_dark",
+  width: 250,
   data: menu_data,
   on: {
     onAfterSelect: function onAfterSelect(id) {
@@ -785,7 +819,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50255" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52667" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

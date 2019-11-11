@@ -17,3 +17,13 @@ export const contacts = new webix.DataCollection({
     }
   }
 });
+
+export const userData = new webix.DataCollection({
+  url: "https://jsonplaceholder.typicode.com/users",
+  save: "rest->https://jsonplaceholder.typicode.com/users",
+  scheme: {
+    $init: function(obj) {
+      (obj.city = obj.address.city), (obj.company = obj.company.name);
+    }
+  }
+});

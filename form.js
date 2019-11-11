@@ -22,9 +22,34 @@ const addParams = {
   id: "addParam",
   borderless: true,
   elements: [
-    { view: "slider" },
-    { view: "datepicker", label: "Date" },
-    { view: "colorpicker", label: "Color" }
+    {
+      view: "slider",
+      lable: "menu width",
+      title: webix.template("#value#"),
+      min: "100",
+      max: "250",
+      step: "10",
+      value: "250",
+      on: {
+        onChange: function() {
+          const size = this.getValue();
+          $$("sidebar").getNode().style.width = size + "px";
+        }
+      }
+    },
+    { view: "datepicker", label: "Date", id: "sss" },
+    {
+      view: "colorpicker",
+      label: "Menu Color",
+      labelWidth: 120,
+      on: {
+        onChange: function() {
+          const color = this.getValue();
+          $$("sidebar").getNode().style.backgroundColor = color;
+          $$("toolbar").getNode().style.backgroundColor = color;
+        }
+      }
+    }
   ]
 };
 

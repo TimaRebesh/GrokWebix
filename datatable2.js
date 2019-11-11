@@ -1,19 +1,17 @@
 export { datatable2 };
-
-const url = "https://jsonplaceholder.typicode.com/users";
+import { userData } from "./data/contacts";
 
 let datatable2 = {
   view: "datatable",
   id: "datatable2",
   autoConfig: true,
-  url: url,
-  save: url,
+  data: userData,
   editable: true,
-  scheme: {
-    $init: function(obj) {
-      (obj.city = obj.address.city), (obj.company = obj.company.name);
-    }
-  },
+  // scheme: {
+  //   $init: function(obj) {
+  //     (obj.city = obj.address.city), (obj.company = obj.company.name);
+  //   }
+  // },
   columns: [
     {
       id: "name",

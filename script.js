@@ -20,12 +20,12 @@ let menu_data = [
   },
   {
     id: "datatable2",
-    icon: "mdi mdi-view-column",
+    icon: "wxi-user",
     value: "Users"
   },
   {
     id: "myList",
-    icon: "mdi mdi-view-column",
+    icon: "mdi mdi-format-line-style",
     value: "List"
   },
   {
@@ -37,6 +37,7 @@ let menu_data = [
 
 const toolbar = {
   view: "toolbar",
+  id: "toolbar",
   padding: 3,
   css: "webix_dark",
   elements: [
@@ -56,6 +57,7 @@ const sidebar = {
   view: "sidebar",
   id: "sidebar",
   css: "webix_dark",
+  width: 250,
   data: menu_data,
   on: {
     onAfterSelect: function(id) {
